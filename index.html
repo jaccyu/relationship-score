@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成熟度与边界感评估</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:"PingFang SC","Microsoft YaHei",sans-serif}
+        body{background:#f8f4fc;padding:20px;max-width:600px;margin:0 auto}
+        .box{background:#fff;padding:30px;border-radius:20px;box-shadow:0 4px 15px rgba(0,0,0,0.06)}
+        h1{font-size:22px;text-align:center;margin-bottom:8px;color:#222}
+        .desc{text-align:center;color:#666;margin-bottom:30px;font-size:14px}
+        .q{margin:14px 0 8px;font-size:15px;color:#333}
+        .opt{margin:0 0 18px 10px}
+        .opt label{display:block;margin:5px 0;font-size:14px;color:#444}
+        button{width:100%;padding:14px;background:#a881d1;color:#fff;border:none;border-radius:12px;font-size:16px;margin-top:10px;cursor:pointer}
+        #res{margin-top:25px;padding:20px;background:#f4effc;border-radius:12px;display:none}
+        #res h3{margin-bottom:8px;font-size:16px}
+        #res p{font-size:15px;color:#333;line-height:1.6}
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>成熟度与边界感评估</h1>
+        <p class="desc">测试一个人的情绪稳定、责任感与靠谱程度</p>
+
+        <!-- 10道隐晦测试题（不指向性别） -->
+        <div class="q">1. 遇到问题，习惯沟通还是逃避？</div>
+        <div class="opt">
+            <label><input type="radio" name="q1" value="10"> 主动沟通</label>
+            <label><input type="radio" name="q1" value="5"> 看情况</label>
+            <label><input type="radio" name="q1" value="0"> 逃避冷处理</label>
+        </div>
+
+        <div class="q">2. 承诺的事情能稳定兑现吗？</div>
+        <div class="opt">
+            <label><input type="radio" name="q2" value="10"> 基本都能</label>
+            <label><input type="radio" name="q2" value="5"> 偶尔做不到</label>
+            <label><input type="radio" name="q2" value="0"> 经常不兑现</label>
+        </div>
+
+        <div class="q">3. 情绪不好会迁怒别人吗？</div>
+        <div class="opt">
+            <label><input type="radio" name="q3" value="10"> 不会</label>
+            <label><input type="radio" name="q3" value="5"> 偶尔会</label>
+            <label><input type="radio" name="q3" value="0"> 经常会</label>
+        </div>
+
+        <div class="q">4. 是否尊重他人边界与节奏？</div>
+        <div class="opt">
+            <label><input type="radio" name="q4" value="10"> 非常尊重</label>
+            <label><input type="radio" name="q4" value="5"> 一般</label>
+            <label><input type="radio" name="q4" value="0"> 习惯强迫</label>
+        </div>
+
+        <div class="q">5. 是否喜欢画大饼、说空话？</div>
+        <div class="opt">
+            <label><input type="radio" name="q5" value="10"> 从不</label>
+            <label><input type="radio" name="q5" value="5"> 偶尔</label>
+            <label><input type="radio" name="q5" value="0"> 经常</label>
+        </div>
+
+        <div class="q">6. 是否愿意提供情绪价值？</div>
+        <div class="opt">
+            <label><input type="radio" name="q6" value="10"> 愿意</label>
+            <label><input type="radio" name="q6" value="5"> 偶尔</label>
+            <label><input type="radio" name="q6" value="0"> 比较自我</label>
+        </div>
+
+        <div class="q">7. 出现矛盾是否有担当？</div>
+        <div class="opt">
+            <label><input type="radio" name="q7" value="10"> 有</label>
+            <label><input type="radio" name="q7" value="5"> 一般</label>
+            <label><input type="radio" name="q7" value="0"> 无</label>
+        </div>
+
+        <div class="q">8. 是否真诚不敷衍？</div>
+        <div class="opt">
+            <label><input type="radio" name="q8" value="10"> 是的</label>
+            <label><input type="radio" name="q8" value="5"> 一般</label>
+            <label><input type="radio" name="q8" value="0"> 习惯敷衍</label>
+        </div>
+
+        <div class="q">9. 是否懂得换位思考？</div>
+        <div class="opt">
+            <label><input type="radio" name="q9" value="10"> 很会</label>
+            <label><input type="radio" name="q9" value="5"> 一般</label>
+            <label><input type="radio" name="q9" value="0"> 不会</label>
+        </div>
+
+        <div class="q">10. 是否尊重他人感受？</div>
+        <div class="opt">
+            <label><input type="radio" name="q10" value="10"> 尊重</label>
+            <label><input type="radio" name="q10" value="5"> 一般</label>
+            <label><input type="radio" name="q10" value="0"> 不尊重</label>
+        </div>
+
+        <button onclick="getScore()">查看评估结果</button>
+
+        <div id="res">
+            <h3>综合得分：<span id="sc"></span> 分</h3>
+            <p id="level"></p>
+            <p id="text"></p>
+        </div>
+    </div>
+
+    <script>
+        function getScore(){
+            let s=0;
+            for(let i=1;i<=10;i++){
+                let t=document.querySelector('input[name="q'+i+'"]:checked');
+                if(t) s+=parseInt(t.value);
+            }
+            document.getElementById("sc").innerText=s;
+            let res=document.getElementById("res");
+            let lv=document.getElementById("level");
+            let tx=document.getElementById("text");
+
+            if(s>=80){
+                lv.innerText="【成熟稳定型】";
+                tx.innerText="情绪稳定、有责任感、尊重边界、靠谱可信。";
+            }else if(s>=50){
+                lv.innerText="【普通正常型】";
+                tx.innerText="整体无大问题，情绪与细节仍有提升空间。";
+            }else{
+                lv.innerText="【自我内耗型】";
+                tx.innerText="情绪不稳定、责任感弱、边界感差，相处易让人疲惫。";
+            }
+            res.style.display="block";
+        }
+    </script>
+</body>
+</html>
